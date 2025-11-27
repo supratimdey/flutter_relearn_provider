@@ -129,7 +129,7 @@ class _WotdCardState extends State<WotdCard> {
                                       ? '${verse!.text.substring(0, 200)}...'
                                       : verse!.text.substring(0),
                                   textAlign: TextAlign.justify,
-                                  style: GoogleFonts.lato(
+                                  style: GoogleFonts.inter(
                                     color: Colors.white,
                                     fontSize: 20,
                                     fontWeight: FontWeight.w600,
@@ -152,7 +152,7 @@ class _WotdCardState extends State<WotdCard> {
                                     alignment: Alignment.centerLeft,
                                     child: Text(
                                       "${verse!.reference} ",
-                                      style: GoogleFonts.lato(
+                                      style: GoogleFonts.inter(
                                         color: Colors.white.withOpacity(0.9),
                                         fontSize: 22,
                                         fontWeight: FontWeight.bold,

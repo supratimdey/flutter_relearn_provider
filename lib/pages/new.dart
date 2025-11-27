@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_relearn_provider/pages/my_stateful_page.dart';
 import 'package:flutter_relearn_provider/pages/pdf_state_page.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../widgets/header_line.dart';
 import '../widgets/wotd_card.dart'; // 1. Import the new widget
 import 'greeting_screen.dart';
 
@@ -15,8 +17,9 @@ class HomeScreen extends StatelessWidget { // Can now be a StatelessWidget
         padding: const EdgeInsets.symmetric(vertical: 20.0),
         child: Column(
           children: [
-            const SizedBox(height: 80),
-
+            const SizedBox(height: 40),
+            HeaderLine(headerText: "Today's Verse"),
+            const SizedBox(height: 16),
             // 2. Use the self-contained Word of the day Card
             const WotdCard(),
 
@@ -96,3 +99,7 @@ class HomeScreen extends StatelessWidget { // Can now be a StatelessWidget
     );
   }
 }
+
+
+
+
