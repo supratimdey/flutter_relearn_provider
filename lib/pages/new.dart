@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_relearn_provider/pages/my_stateful_page.dart';
 import 'package:flutter_relearn_provider/pages/pdf_state_page.dart';
+import 'package:flutter_relearn_provider/widgets/wotd_holder.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-import '../widgets/header_line.dart';
-import '../widgets/wotd_card.dart'; // 1. Import the new widget
+
 import 'greeting_screen.dart';
 
 class HomeScreen extends StatelessWidget { // Can now be a StatelessWidget
@@ -18,10 +17,11 @@ class HomeScreen extends StatelessWidget { // Can now be a StatelessWidget
         child: Column(
           children: [
             const SizedBox(height: 40),
-            HeaderLine(headerText: "Today's Verse"),
-            const SizedBox(height: 16),
+           // HeaderLine(headerText: "Today's Verse"),
+            //const SizedBox(height: 16),
             // 2. Use the self-contained Word of the day Card
-            const WotdCard(),
+            //const WotdCard(),
+            const WotdHolderPanel(),
 
             const SizedBox(height: 40),
             Center(

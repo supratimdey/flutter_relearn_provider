@@ -12,10 +12,12 @@ class PexelsService {
 
   static Future<String?> getTodayImage() async {
     final url = Uri.parse(
-      "https://api.pexels.com/v1/collections/$collectionId?per_page=31",
+      "https://api.pexels.com/v1/collections/$collectionId?per_page=$totalImages",
     );
 
-    final response = await http.get(url, headers: {"Authorization": apiKey});
+    final response = await http.get(
+      url,
+      headers: {"Authorization": apiKey},);
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -34,9 +36,14 @@ class PexelsService {
       // Extract the image URL for today's image based on the day of the month
       final today = DateTime.now().day;
 
-      return photos[today - 1]["src"]["large"] as String;
+      if (today > photos.length){
+        print("day of the month is greater .");
+        return photos[0]["src"]["large"] as String;
+      }
+
+      return photos[today -1]["src"]["large"] as String;
     }
-    print("Failed to load image. Status code: ${response.statusCode}");
+    print("Failed to load image. Status code: ${response.statusCode} ${response.body}");
     return null;
   }
 }
