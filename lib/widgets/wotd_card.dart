@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_relearn_provider/models/daily_verse.dart';
+import 'package:flutter_relearn_provider/models/pexel_image_data.dart';
 import 'package:flutter_relearn_provider/pages/bible/bible_ref_view_page.dart';
 import 'package:flutter_relearn_provider/services/pexels_service.dart';
 import 'package:flutter_relearn_provider/services/wotd_service.dart';
@@ -17,7 +18,9 @@ class WotdCard extends StatefulWidget {
 
 class _WotdCardState extends State<WotdCard> {
   // 2. The widget now manages its own state
+  PexelImageData? imageData;
   String? imageUrl;
+ // String? avgColor;
   DailyVerse? verse;
 
   // 3. Fetch data within the widget's own initState
@@ -41,7 +44,7 @@ class _WotdCardState extends State<WotdCard> {
         // Handle the case where verse is null with a default
         var defaultVerse = DailyVerse(
           text:
-          "For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.",
+              "For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.",
           reference: "John 3:16",
         );
         setState(() => verse = defaultVerse);
@@ -50,9 +53,19 @@ class _WotdCardState extends State<WotdCard> {
   }
 
   void loadImageUrl() async {
-    final url = await PexelsService.getTodayImage();
+    final imageData = await PexelsService.getTodayImage();
     if (mounted) {
-      setState(() => imageUrl = url);
+      setState(() {
+        if (imageData != null) {
+          imageUrl = imageData.imageUrl;
+        //  avgColor = imageData.avgColor;
+        } else {
+          // Fallback to a default image URL if none is fetched
+          imageUrl =
+              'https://images.pexels.com/photos/414171/pexels-photo-414171.jpeg';
+         //     avgColor = '#FFFFFF';
+        }
+      });
     }
   }
 
@@ -77,11 +90,12 @@ class _WotdCardState extends State<WotdCard> {
           child: Padding(
             padding: const EdgeInsets.only(left: 4.0, right: 4.0),
             child: ClipRRect(
-              borderRadius: BorderRadius .only(
-                  topLeft: Radius.zero,
-                  topRight:Radius.zero,
-                  bottomLeft: Radius.circular(4),
-                  bottomRight: Radius.circular(4)),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.zero,
+                topRight: Radius.zero,
+                bottomLeft: Radius.circular(4),
+                bottomRight: Radius.circular(4),
+              ),
               child: Stack(
                 alignment: Alignment.center,
                 children: [
@@ -91,11 +105,10 @@ class _WotdCardState extends State<WotdCard> {
                       imageUrl: imageUrl!,
                       fit: BoxFit.cover,
                       width: double.infinity,
-                      placeholder: (context, url) => const Center(
-                        child: CircularProgressIndicator(),
-                      ),
+                      placeholder: (context, url) =>
+                          const Center(child: CircularProgressIndicator()),
                       errorWidget: (context, url, error) =>
-                      const Icon(Icons.error),
+                          const Icon(Icons.error),
                     )
                   else
                     const Center(child: CircularProgressIndicator()),
@@ -125,8 +138,11 @@ class _WotdCardState extends State<WotdCard> {
                             if (verse != null)
                               GestureDetector(
                                 onTap: () {
-                                  Get.to(() => BibleRefViewPage(
-                                      bibleRef: verse!.reference));
+                                  Get.to(
+                                    () => BibleRefViewPage(
+                                      bibleRef: verse!.reference,
+                                    ),
+                                  );
                                 },
                                 child: Text(
                                   verse!.text.length > 200
@@ -167,7 +183,8 @@ class _WotdCardState extends State<WotdCard> {
 
                                   Align(
                                     alignment: Alignment.centerLeft,
-                                    child: Icon(Icons.open_in_new,
+                                    child: Icon(
+                                      Icons.open_in_new,
                                       size: 24,
                                       color: Colors.white,
                                     ),

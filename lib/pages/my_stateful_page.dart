@@ -47,6 +47,17 @@ class _MyStatefulPageState extends ConsumerState<MyStatefulPage> {
             ),
             const SizedBox(height: 20),
             Text('Your typed: $text'),
+
+          Image.asset(
+              'assets/images/TBT.jpg',
+              fit: BoxFit.cover,
+              width: 200,
+              height: 400,
+            alignment: .center,
+            ),
+
+             
+
           ],
         ),
       ),

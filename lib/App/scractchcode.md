@@ -1,65 +1,119 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter_relearn_provider/pages/greeting_screen.dart';
+import 'package:flutter_relearn_provider/pages/my_stateful_page.dart';
+import 'package:flutter_relearn_provider/pages/pdf_state_page.dart';
+import 'package:get/get.dart';
 
-// ignore: must_be_immutable
-class BibleRefViewPage extends StatelessWidget {
-final String bibleRef;
+class NavigationCarousel extends StatefulWidget {
+const NavigationCarousel({super.key});
 
-BibleRefViewPage({Key? key, required this.bibleRef}) : super(key: key) {}
-
-WebViewController controller = WebViewController()
-..setJavaScriptMode(JavaScriptMode.unrestricted)
-..setBackgroundColor(const Color(0x00000000))
-..setNavigationDelegate(
-NavigationDelegate(
-onProgress: (int progress) {
-// Update loading bar.
-},
-onPageStarted: (String url) {},
-onPageFinished: (String url) {},
-onWebResourceError: (WebResourceError error) {},
-onNavigationRequest: (NavigationRequest request) {
-if (request.url.startsWith('https://www.youtube.com/')) {
-return NavigationDecision.prevent;
+@override
+State<NavigationCarousel> createState() => _NavigationCarouselState();
 }
-return NavigationDecision.navigate;
+
+class _NavigationCarouselState extends State<NavigationCarousel> {
+late PageController _pageController;
+double _currentPage = 0.0;
+
+// This data is now self-contained within the widget
+final List<Map<String, dynamic>> _carouselItems = [
+{
+"title": "Go to Pdf Page",
+"color": Colors.deepOrange[200]!,
+"onTap": () => Get.to(() => const PdfStatePage()),
 },
-),
+{
+"title": "Go to State Page",
+"color": Colors.green[200]!,
+"onTap": () => Get.to(() => const MyStatefulPage()),
+},
+{
+"title": "Go to Greetings Page",
+"color": Colors.amber[200]!,
+"onTap": () => Get.to(() => const GreetingScreen()),
+},
+];
+
+@override
+void initState() {
+super.initState();
+_pageController = PageController(
+initialPage: 0,
+viewportFraction: 0.6, // Shows adjacent cards
 );
-//..loadRequest(Uri.parse(url));
+_pageController.addListener(() {
+setState(() {
+_currentPage = _pageController.page!;
+});
+});
+}
+
+@override
+void dispose() {
+_pageController.dispose();
+super.dispose();
+}
 
 @override
 Widget build(BuildContext context) {
-var bibleRefURL = "";
+return SizedBox(
+height: 240,
+child: PageView.builder(
+controller: _pageController,
+itemCount: _carouselItems.length,
+itemBuilder: (context, index) {
+// Calculate the scale and elevation for the current item
+double scale = max(0.85, 1 - (_currentPage - index).abs() * 0.3);
+double elevation = (_currentPage.round() == index) ? 12.0 : 4.0;
 
-     
+          final item = _carouselItems[index];
+          return Transform.scale(
+            scale: scale,
+            child: _buildCarouselCard(
+              title: item["title"],
+              color: item["color"],
+              onTap: item["onTap"],
+              elevation: elevation,
+            ),
+          );
+        },
+      ),
+    );
+}
 
-    // split the bibleRef
-    final bibleRefSplited = bibleRef.split(' ');
-
-    if (bibleRefSplited.length > 2) {
-      final bibleBookRef = "https://www.christianity.com/bible/niv/" +
-          bibleRefSplited[0] +
-          "-" +
-          bibleRefSplited[1] +
-          "/";
-      final bookChapterParaRef = bibleRefSplited[2].replaceAll(":", "-");
-      bibleRefURL = bibleBookRef.trim() + bookChapterParaRef.trim();
-    } else {
-      final bibleBookRef =
-          "https://www.christianity.com/bible/niv/" + bibleRefSplited[0] + "/";
-      final bookChapterParaRef = bibleRefSplited[1].replaceAll(":", "-");
-      bibleRefURL = bibleBookRef.trim() + bookChapterParaRef.trim();
-    }
-
-    controller.loadRequest(Uri.parse(bibleRefURL));
-    return Scaffold(
-        appBar: AppBar(
-            title: const Text("Bible"),
-            centerTitle: true,
-            backgroundColor: Color.fromARGB(255, 127, 25, 47)),
-        body: WebViewWidget(
-          controller: controller,
-        ));
+Widget _buildCarouselCard({
+required String title,
+required Color color,
+required VoidCallback onTap,
+double elevation = 8.0,
+}) {
+return SizedBox(
+width: 180,
+child: GestureDetector(
+onTap: onTap,
+child: Card(
+elevation: elevation,
+color: color,
+shape: RoundedRectangleBorder(
+borderRadius: BorderRadius.circular(15),
+),
+child: Center(
+child: Padding(
+padding: const EdgeInsets.all(16.0),
+child: Text(
+title,
+textAlign: TextAlign.center,
+style: const TextStyle(
+fontSize: 22,
+fontWeight: FontWeight.bold,
+color: Colors.black87,
+),
+),
+),
+),
+),
+),
+);
 }
 }

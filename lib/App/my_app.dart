@@ -12,7 +12,26 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
+      theme: ThemeData(
+        brightness: Brightness.light, // Explicitly set brightness
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.grey,
+          brightness: Brightness.light,
+        ),
+        useMaterial3: true,
+      ),
+      // 2. Add a corresponding darkTheme
+      darkTheme: ThemeData(
+        brightness: Brightness.dark, // Explicitly set brightness
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.purple,
+          brightness: Brightness.dark, // Important for correct color generation
+        ),
+        useMaterial3: true,
+      ),
+
+      // 3. Tell Flutter to follow the system's setting
+      themeMode: ThemeMode.system,
       home: const HomeScreen(),
     );
   }

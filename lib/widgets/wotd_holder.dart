@@ -1,8 +1,12 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_relearn_provider/models/pexel_image_data.dart';
+import 'package:flutter_relearn_provider/services/pexels_service.dart';
+import 'package:flutter_relearn_provider/utils/utility.dart';
 import 'package:flutter_relearn_provider/widgets/wotd_card.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -10,14 +14,53 @@ import 'package:url_launcher/url_launcher_string.dart';
 import '../constants/constant_colors.dart';
 import '../pages/bible/bible_view_page.dart';
 
-class WotdHolderPanel extends StatelessWidget {
+class WotdHolderPanel extends StatefulWidget {
   const WotdHolderPanel();
+
+  @override
+  State<WotdHolderPanel> createState() => _WotdHolderPanelState();
+}
+
+class _WotdHolderPanelState extends State<WotdHolderPanel> {
+
+ PexelImageData? imageData;
+   String? imageUrl;
+   late String avgColor ="#FFFFFF";
+   
+
+  // 3. Fetch data within the widget's own initState
+  @override
+  void initState() {
+    super.initState();
+   // loadData();
+  }
+
+  void loadData() {
+   // loadImageUrl();
+  }
+
+   void loadImageUrl() async {
+    final imageData = await PexelsService.getTodayImage();
+    if (mounted) {
+      setState(() {
+        if (imageData != null) {
+          imageUrl = imageData.imageUrl;
+          avgColor = imageData.avgColor;
+        } else {
+          // Fallback to a default image URL if none is fetched
+          imageUrl =
+              'https://images.pexels.com/photos/414171/pexels-photo-414171.jpeg';
+          avgColor = '#FFFFFF';
+        }
+      });
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
     debugPrint("Votd Holder Build  method called");
 
-    double _width = MediaQuery.of(context).size.width * 0.96;
     final ConstantColors constantColors = ConstantColors();
 
     return Padding(
@@ -28,18 +71,18 @@ class WotdHolderPanel extends StatelessWidget {
         width: double.infinity,
         decoration: BoxDecoration(
           color: Theme.of(context).brightness == Brightness.dark
-              ? Theme.of(context).colorScheme.surface.withOpacity(0.9)   // dark mode
-              : Colors.white,                                            // light mode
+              ?   Colors.grey[300]  // darker shadow in dark mode
+              : Colors.white,                  // light mode
 
           borderRadius: BorderRadius.circular(12),
 
           boxShadow: [
             BoxShadow(
               color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.black.withOpacity(0.5)   // darker shadow in dark mode
+                  ? Theme.of(context).colorScheme.onPrimaryContainer   // darker shadow in dark mode
                   : Color.fromRGBO(143, 148, 255, 1).withOpacity(0.4),
-              blurRadius: 20,
-              offset: const Offset(0, 10),
+              blurRadius: 8,
+              offset: const Offset(0, 5),
             ),
           ],
         ),
@@ -52,13 +95,15 @@ class WotdHolderPanel extends StatelessWidget {
               children: [
                 Padding(
                   padding:
-                  const EdgeInsets.only(left: 4.0, top: 8.0, right: 84.0),
+                  const EdgeInsets.only(left: 4.0, top: 8.0, bottom: 8.0, right: 84.0),
                   child: Text(
                     'Verse Of the Day',
                     style: GoogleFonts.inter(
                         fontSize: 20,
                         fontWeight: FontWeight.w500,
-                        color: constantColors.purpleColor),
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.deepPurple  // darker shadow in dark mode
+                            : constantColors.purpleColor),
                   ),
                 ),
                 Padding(
@@ -71,7 +116,10 @@ class WotdHolderPanel extends StatelessWidget {
             Divider(
               color: Colors.black,
             ),
-            actionBar(context)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: actionBar(context),
+            )
           ],
         ),
       ),
@@ -79,9 +127,6 @@ class WotdHolderPanel extends StatelessWidget {
   }
 
 // ─────────────────────────────────────────────
-//  FROSTED HEADER: "Verse Of the Day"
-// ─────────────────────────────────────────────
-
   Widget frostedVerseHeader() {
     return ClipRRect(
       borderRadius: BorderRadius.circular(16),
@@ -128,17 +173,16 @@ class WotdHolderPanel extends StatelessWidget {
     );
   }
 
-
   Widget actionBar(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.15),
-            borderRadius: BorderRadius.circular(20),
+            color: Colors.grey.withOpacity(0.15),
+            borderRadius: BorderRadius.circular(16),
             border: Border.all(color: Colors.white.withOpacity(0.2)),
           ),
           child: Row(
@@ -202,8 +246,7 @@ class WotdHolderPanel extends StatelessWidget {
       ),
     );
   }
-  
-  
+
   Future<void> _checkAndLaunchUrl() async {
     const urlString = 'https://m.youtube.com/@ServeNowSriLanka';
     if (await canLaunchUrlString(urlString)) {

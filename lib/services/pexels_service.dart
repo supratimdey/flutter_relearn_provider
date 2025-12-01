@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_relearn_provider/models/pexel_image_data.dart';
 import 'package:http/http.dart' as http;
 
 class PexelsService {
@@ -10,7 +11,7 @@ class PexelsService {
 
   static const int totalImages = 31;
 
-  static Future<String?> getTodayImage() async {
+  static Future<PexelImageData?> getTodayImage() async {
     final url = Uri.parse(
       "https://api.pexels.com/v1/collections/$collectionId?per_page=$totalImages",
     );
@@ -38,10 +39,18 @@ class PexelsService {
 
       if (today > photos.length){
         print("day of the month is greater .");
-        return photos[0]["src"]["large"] as String;
+
+        final imageUrl = photos[0]["src"]["large"] as String;
+        final avgColor =photos[0]["avg_color"] as String;
+
+        return PexelImageData(imageUrl, avgColor);
       }
 
-      return photos[today -1]["src"]["large"] as String;
+      final imageUrl = photos[today - 1]["src"]["large"] as String;
+      final avgColor = photos[today - 1]["avg_color"] as String;
+
+      return PexelImageData(imageUrl, avgColor);
+       
     }
     print("Failed to load image. Status code: ${response.statusCode} ${response.body}");
     return null;
