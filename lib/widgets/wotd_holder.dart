@@ -1,60 +1,15 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_relearn_provider/models/pexel_image_data.dart';
-import 'package:flutter_relearn_provider/services/pexels_service.dart';
-import 'package:flutter_relearn_provider/utils/utility.dart';
 import 'package:flutter_relearn_provider/widgets/wotd_card.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
-
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-
 import '../constants/constant_colors.dart';
 import '../pages/bible/bible_view_page.dart';
 
-class WotdHolderPanel extends StatefulWidget {
-  const WotdHolderPanel();
-
-  @override
-  State<WotdHolderPanel> createState() => _WotdHolderPanelState();
-}
-
-class _WotdHolderPanelState extends State<WotdHolderPanel> {
-
- PexelImageData? imageData;
-   String? imageUrl;
-   late String avgColor ="#FFFFFF";
-   
-
-  // 3. Fetch data within the widget's own initState
-  @override
-  void initState() {
-    super.initState();
-   // loadData();
-  }
-
-  void loadData() {
-   // loadImageUrl();
-  }
-
-   void loadImageUrl() async {
-    final imageData = await PexelsService.getTodayImage();
-    if (mounted) {
-      setState(() {
-        if (imageData != null) {
-          imageUrl = imageData.imageUrl;
-          avgColor = imageData.avgColor;
-        } else {
-          // Fallback to a default image URL if none is fetched
-          imageUrl =
-              'https://images.pexels.com/photos/414171/pexels-photo-414171.jpeg';
-          avgColor = '#FFFFFF';
-        }
-      });
-    }
-  }
+class WotdHolderPanel extends StatelessWidget {
+  const WotdHolderPanel({super.key});
 
 
   @override
@@ -71,15 +26,15 @@ class _WotdHolderPanelState extends State<WotdHolderPanel> {
         width: double.infinity,
         decoration: BoxDecoration(
           color: Theme.of(context).brightness == Brightness.dark
-              ?   Colors.grey[300]  // darker shadow in dark mode
-              : Colors.white,                  // light mode
+              ?   Colors.grey[900]  // darker shadow in dark mode
+              : Colors.white54,                  // light mode
 
           borderRadius: BorderRadius.circular(12),
 
           boxShadow: [
             BoxShadow(
               color: Theme.of(context).brightness == Brightness.dark
-                  ? Theme.of(context).colorScheme.onPrimaryContainer   // darker shadow in dark mode
+                  ? Theme.of(context).colorScheme.onSecondary   // darker shadow in dark mode
                   : Color.fromRGBO(143, 148, 255, 1).withOpacity(0.4),
               blurRadius: 8,
               offset: const Offset(0, 5),
@@ -101,14 +56,20 @@ class _WotdHolderPanelState extends State<WotdHolderPanel> {
                     style: GoogleFonts.inter(
                         fontSize: 20,
                         fontWeight: FontWeight.w500,
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? Colors.deepPurple  // darker shadow in dark mode
-                            : constantColors.purpleColor),
+                        color: Theme
+                            .of(context)
+                            .brightness == Brightness.dark
+                            ? Colors.deepPurple[200] // darker shadow in dark mode
+                            : const Color(0xFF542AE2)),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 8.0),
-                  child: Icon(Icons.book, color: Colors.deepPurple),
+                  child: Icon(Icons.book, color: Theme
+                      .of(context)
+                      .brightness == Brightness.dark
+                      ? Colors.deepPurple[200] // darker shadow in dark mode
+                      : const Color(0xFF542AE2)),
                 ),
               ],
             ),
@@ -121,53 +82,6 @@ class _WotdHolderPanelState extends State<WotdHolderPanel> {
               child: actionBar(context),
             )
           ],
-        ),
-      ),
-    );
-  }
-
-// ─────────────────────────────────────────────
-  Widget frostedVerseHeader() {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(16),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.15),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: Colors.white.withOpacity(0.25),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.10),
-                blurRadius: 20,
-                offset: const Offset(0, 6),
-              ),
-            ],
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 4),
-                child: Text(
-                  'Verse Of the Day',
-                  style: GoogleFonts.inter(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.deepPurple,
-                  ),
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.only(right: 8),
-                child: Icon(Icons.book, color: Colors.deepPurple),
-              ),
-            ],
-          ),
         ),
       ),
     );
@@ -188,7 +102,7 @@ class _WotdHolderPanelState extends State<WotdHolderPanel> {
           child: Row(
             children: [
               // ───────────────────────────────────────────────
-              // 📖 BIBLE RESOURCES BUTTON  
+              // 📖 BIBLE RESOURCES BUTTON
               // ───────────────────────────────────────────────
               Expanded(
                 child: ElevatedButton.icon(
@@ -204,7 +118,11 @@ class _WotdHolderPanelState extends State<WotdHolderPanel> {
                   ),
                   style: ElevatedButton.styleFrom(
                     elevation: 2,
-                    backgroundColor: const Color(0xFF542AE2),
+                    backgroundColor:  Theme
+                        .of(context)
+                        .brightness == Brightness.dark
+                        ? Colors.deepPurple[200] // darker shadow in dark mode
+                        : const Color(0xFF542AE2),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -232,7 +150,11 @@ class _WotdHolderPanelState extends State<WotdHolderPanel> {
                   ),
                   style: ElevatedButton.styleFrom(
                     elevation: 2,
-                    backgroundColor: const Color(0xFF542AE2),
+                    backgroundColor:  Theme
+                        .of(context)
+                        .brightness == Brightness.dark
+                        ? Colors.deepPurple[200] // darker shadow in dark mode
+                        : const Color(0xFF542AE2),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),

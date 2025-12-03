@@ -40,7 +40,7 @@ void initState() {
 super.initState();
 _pageController = PageController(
 initialPage: 0,
-viewportFraction: 0.6, // Shows adjacent cards
+viewportFraction: 0.4, // Shows adjacent cards
 );
 _pageController.addListener(() {
 setState(() {
@@ -58,7 +58,7 @@ super.dispose();
 @override
 Widget build(BuildContext context) {
 return SizedBox(
-height: 240,
+height: 250,
 child: PageView.builder(
 controller: _pageController,
 itemCount: _carouselItems.length,
@@ -89,31 +89,40 @@ required VoidCallback onTap,
 double elevation = 8.0,
 }) {
 return SizedBox(
-width: 180,
+width: 120,
 child: GestureDetector(
 onTap: onTap,
 child: Card(
 elevation: elevation,
 color: color,
+shadowColor: Theme
+.of(context)
+.brightness == Brightness.dark
+? Theme
+.of(context)
+.colorScheme
+.onPrimaryContainer// darker shadow in dark mode
+: Color.fromRGBO(140, 72, 210, 1.0).withOpacity(0.4),
 shape: RoundedRectangleBorder(
-borderRadius: BorderRadius.circular(15),
-),
-child: Center(
-child: Padding(
-padding: const EdgeInsets.all(16.0),
-child: Text(
-title,
-textAlign: TextAlign.center,
-style: const TextStyle(
-fontSize: 22,
-fontWeight: FontWeight.bold,
-color: Colors.black87,
-),
-),
-),
-),
-),
-),
-);
+borderRadius: BorderRadius.circular(15)
+
+          ),
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                title,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
 }
 }
