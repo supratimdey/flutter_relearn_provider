@@ -145,13 +145,13 @@ class _WotdCardState extends State<WotdCard> {
                                   );
                                 },
                                 child: Text(
-                                  verse!.text.length > 200
+                                  verse!.text.length > 170
                                       ? '${verse!.text.substring(0, 200)}...'
                                       : verse!.text.substring(0),
                                   textAlign: TextAlign.justify,
                                   style: GoogleFonts.inter(
                                     color: Colors.white,
-                                    fontSize: 20,
+                                    fontSize: 18,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),

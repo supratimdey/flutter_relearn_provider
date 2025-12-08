@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_relearn_provider/pages/greeting_screen.dart';
 import 'package:flutter_relearn_provider/pages/my_stateful_page.dart';
@@ -14,7 +15,7 @@ class NavigationCarousel extends StatefulWidget {
 
 class _NavigationCarouselState extends State<NavigationCarousel> {
   late PageController _pageController;
-  double _currentPage = 0.0;
+  double _currentPage = 2.0;
 
   // 1. Add an "image" key to your data map
   final List<Map<String, dynamic>> _carouselItems = [
@@ -102,19 +103,18 @@ class _NavigationCarouselState extends State<NavigationCarousel> {
         child: Card(
           elevation: elevation,
           color: color,
-          clipBehavior: Clip.hardEdge, // Important to keep the image inside the card's rounded corners
-          shadowColor: Theme
-              .of(context)
-              .brightness == Brightness.dark
-              ? Theme
-              .of(context)
-              .colorScheme
-              .onPrimaryContainer// darker shadow in dark mode
+          clipBehavior: Clip
+              .hardEdge, // Important to keep the image inside the card's rounded corners
+          shadowColor: Theme.of(context).brightness == Brightness.dark
+              ? Theme.of(context)
+                    .colorScheme
+                    .onPrimaryContainer // darker shadow in dark mode
               : const Color.fromRGBO(140, 72, 210, 1.0).withOpacity(0.4),
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12)
+            borderRadius: BorderRadius.circular(12),
           ),
-          child: Stack( // Use a Stack to layer the image and text
+          child: Stack(
+            // Use a Stack to layer the image and text
             fit: StackFit.expand,
             children: [
               // 3. Image background with a color overlay for readability
@@ -127,7 +127,11 @@ class _NavigationCarouselState extends State<NavigationCarousel> {
               Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Colors.black.withOpacity(0.3), Colors.transparent, Colors.black.withOpacity(0.3)],
+                    colors: [
+                      Colors.black.withOpacity(0.3),
+                      Colors.transparent,
+                      Colors.black.withOpacity(0.3),
+                    ],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                   ),
@@ -142,10 +146,13 @@ class _NavigationCarouselState extends State<NavigationCarousel> {
                   title,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white, // Changed text color to white for better contrast
-                      shadows: [Shadow(blurRadius: 2, color: Colors.black87)] // Add shadow for readability
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors
+                        .white, // Changed text color to white for better contrast
+                    shadows: [
+                      Shadow(blurRadius: 2, color: Colors.black87),
+                    ], // Add shadow for readability
                   ),
                 ),
               ),
